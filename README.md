@@ -4,7 +4,13 @@ GC first branch of CRUD web app with nodejs on Google Cloud Platform
 
 Refer to the [README.md][readme] file for instructions on running and deploying.
 
-## Install dependencies:
+## Software used
+
+> - Nodejs
+> - Express
+> - Bootstrap
+
+## Install dependencies
 
     npm install
 

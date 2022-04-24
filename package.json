@@ -1,0 +1,38 @@
+{
+  "name": "gccrud",
+  "description": "Simple Web App CRUD Node.js sample for Google App Engine Standard Environment.",
+  "version": "0.0.2",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "GCARNAB",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gcarnab/gcpnode.git"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "test": "mocha --exit test/*.test.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "@fortawesome/fontawesome-free": "5.15.3",
+    "bootstrap": "4.6.0",
+    "chart.js": "2.9.4",
+    "datatables.net-bs4": "1.10.24",
+    "jquery": "3.6.0",
+    "jquery.easing": "^1.4.1",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
+    "morgan": "~1.9.1"    
+  },
+  "devDependencies": {
+    "mocha": "^9.0.0",
+    "supertest": "^6.0.0",
+    "nodemon": "^2.0.15"
+  }
+}
