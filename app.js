@@ -1,61 +1,152 @@
 // Copyright 2022 GCARNAB
+// gcpnode entry point
 
-//**** IMPORT MODULES ****/
+var express = require("express")
+var ejs = require("ejs")
+var path = require("path")
+var bodyParser = require("body-parser")
+var createError = require("http-errors")
+var session = require("express-session")
+var { v4: uuidv4 } = require("uuid")
+var validator = require("express-validator")
+var methodOverride = require("method-override")
+var jsonServer = require("json-server")
+//var engines = require("consolidate")
 
-//import 'bootstrap';
+// DB
+//var myConnection = require("express-myconnection")
+var mysql = require("mysql")
 
-'use strict';
+//LOGGING
+var morgan = require("morgan")
+var fs = require("fs")
+var rfs = require("rotating-file-stream")
 
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+//ENVIRONMENT VARIABLES
+require("dotenv").config()
+console.log("######################################")
+console.log("process.env.NODE_ENV= " + process.env.NODE_ENV)
+console.log("process.env.DB_USE= " + process.env.DB_USE)
+console.log("process.env.DB_TYPE= " + process.env.DB_TYPE)
+console.log("######################################")
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+// Creating express server
+const app = express()
 
-var app = express();
+if (process.env.DB_USE_MYSQL == "true") {
+  var connection = require("./database/db")
+  // connecting route to Mysql DB
+  app.use(function (req, res, next) {
+    req.conn = connection
+    next()
+  })
+}
+if (process.env.DB_USE_MONGO == "true") {
+  var mongoConnection = require("./database/db_mongo")
+  // mongodb connection
+  //connectMongoDB()
+}
+if (process.env.DB_USE_JSON == "true") {
+  // JSON Server
+  app.use("/json", jsonServer.router("./database/db.json"))
+}
+// assign the engine to the file
+/* app.engine("ejs", engines.ejs)
+app.engine("pug", engines.pug) */
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+// SETTING the default extension
+//app.set("view engine", "pug")
+app.set("view engine", "ejs")
+app.set("views", path.join(__dirname, "views"))
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+// importing routes
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/assets',express.static(__dirname + '/assets'));
+var rootRouter = require("./routes/index")
 
-//for /index page
-app.get('/', function(req,res){
-  //res.status(200).send('<h1> GC Web App CRUD with nodejs on GCP! </h1>').end();
-	res.sendFile('index.html',{root:path.join(__dirname,'./views')});
-});
+//var crudRouter = require("./routes/crudRouter")
+//var mongoRouter = require("./routes/mongoRouter")
 
-app.get('/buttons', function(request,response){
-	response.sendFile('buttons.html',{root:path.join(__dirname,'./views')});
-});
+//ACTIONS FOR DEVELOPMENT MODE
+if (process.env.NODE_ENV == "development") {
+  // development error handler will print stacktrace
+  app.use(function (err, req, res, next) {
+    res.status(err.status || 500)
+    res.render("error", {
+      message: err.message,
+      error: err,
+    })
+  })
 
-app.get('/cards', function(request,response){
-	response.sendFile('cards.html',{root:path.join(__dirname,'./views')});
-});
+  /*   app.use(function (req, res, next) {
+    //next(createError(404))
+    //res.sendFile("404.html", { root: path.join(__dirname, "./views") })
+    res.render("pages/404", { message: createError(404) })
+  }) */
 
- // catch 404 and forward to error handler
-/* app.use(function(req, res, next) {
-  next(createError(404));
-}); */
+  // ENABLING LOGGING
+  // create a write stream (in append mode)
+  /*   var accessLogStream = fs.createWriteStream(
+    path.join(__dirname, "./log/access.log"),
+    { flags: "a" }
+  ) */
+  // create a rotating write stream
+  /*   var accessLogStream = rfs.createStream("access.log", {
+    interval: "1d", // rotate daily
+    path: path.join(__dirname, "./log"),
+  }) */
+  // setup the logger
+  //app.use(morgan("combined", { stream: accessLogStream }))
+  app.use(morgan("tiny"))
+} else if (process.env.NODE_ENV == "production") {
+  //PRODUCTION SETTINGS
+}
+
+// static files
+app.use(express.static(__dirname + "/public"))
+
+// load assets
+app.use("/css", express.static(path.resolve(__dirname, "assets/css")))
+app.use("/img", express.static(path.resolve(__dirname, "assets/img")))
+app.use("/js", express.static(path.resolve(__dirname, "assets/js")))
+
+// parse requests of content-type - application/json
+app.use(express.json())
+// parse requests of content-type - application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: false }))
+//app.use(bodyParser.urlencoded({ extended: true }))
+app.use(methodOverride("_method"))
+
+//Using session
+app.use(
+  session({
+    secret: uuidv4(),
+    resave: true,
+    saveUninitialized: true,
+  })
+)
+
+// Using routes
+app.use("/", rootRouter)
+
+//app.use("/crud", crudRouter)
+
+/* mongoRouter.route("/mongo").get((req, res) => {
+  res.sendFile(path.join(__dirname + "pages/mongo_index.ejs"))
+}) */
+// app.use("/", mongoRouter)
+
+// TEST ROUTE
+app.get("/test", (req, res) => {
+  //res.json({ message: "Welcome to GC Web TEST API!" })
+  res.sendFile("test.html", { root: path.join(__dirname, "./views") })
+})
 
 // Start the server
-const PORT = parseInt(process.env.PORT) || 8080
+console.log(process.env.SERVERPORT)
+const PORT = parseInt(process.env.SERVERPORT) || 8080
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`)
-  console.log('Press Ctrl+C to quit.')
-});
-// [END gae_node_request_example]
+  console.log("Press Ctrl+C to quit.")
+})
 
 module.exports = app

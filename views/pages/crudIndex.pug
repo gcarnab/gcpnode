@@ -1,0 +1,45 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(http-equiv="X-UA-Compatible", content="IE=edge")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title GC Web
+        link(rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css")
+    body 
+        h1(style="text-align:center;") REST MySQL CRUD with PUG
+        p(style="text-align:center;")
+            a(href="/") HOME
+        hr
+        div(class="container mt-5")
+            div(class="row")
+                div(class="col-md-7")
+                    table(class="table table-bordered table-hover")
+                        thead
+                        tr
+                            td ID
+                            td USERNAME
+                            td PASSWORD
+                            td EMAIL
+                            td FULLNAME
+                            td(colspan=2 style="text-align:center;")
+                                a(href="crud/create" class="btn btn-info") CREATE
+                        tbody
+                        for row, index in data
+                            tr
+                                td #{row.userid}
+                                td #{row.username}
+                                td #{row.password}
+                                td #{row.email}
+                                td #{row.fullname}
+                                td
+                                    a(href=`/crud/${row.userid}/edit` class="btn btn-info") Edit
+                                td
+
+                                    form(action=`/crud/${row.userid}?_method=DELETE`, method="post")
+                                        input(type="submit", value="DELETE" class="btn btn-danger")
+
+
+
+
+

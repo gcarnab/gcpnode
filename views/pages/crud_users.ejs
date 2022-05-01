@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <%- include('../partials/head_test'); %>
+</head>
+
+<body>
+    <%- include('../partials/header_test'); %>
+
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-md-7">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <td>#</td>
+                                <td>Username</td>
+                                <td>Password</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (data) { %>
+                                <% for(var i=0; i < data.length; i++) { %>
+                                    <tr>
+                                        <td>
+                                            <!-- <%= (i + 1) %> -->
+                                            <%= data[i].userid %>
+                                        </td>
+                                        <td>
+                                            <%= data[i].username %>
+                                        </td>
+                                        <td>
+                                            <%= data[i].password %>
+                                        </td>
+                                        <td>
+                                            <a href="/update/<%= data[i].userid %>" class="btn btn-info">Edit</a>
+                                            <a href="/delete/<%= data[i].userid %>" class="btn btn-danger">Delete</a>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                                        <% } %>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-5">
+                    <div class="card-body">
+
+                        <form action="/add" method="POST">
+                            <div class="form-group">
+                                <input type="text" name="username" placeholder="Username" class="form-control"
+                                    autofocus>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" name="password" placeholder="Password" class="form-control">
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                save user
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <%- include('../partials/footer_test'); %>
+
+</body>
+
+</html>
