@@ -15,8 +15,8 @@ if (process.env.DB_USE == "true") {
     user: process.env.DB_USER,
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
-    connectTimeout: 20000,
-    acquireTimeout: 20000,
+    connectTimeout: parseInt(process.env.MYSQL_CON_TIMEOUT),
+    acquireTimeout: parseInt(process.env.MYSQL_ACQ_TIMEOUT),
   })
 
   connection.connect((err) => {

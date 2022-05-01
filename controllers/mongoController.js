@@ -1,4 +1,4 @@
-var Userdb = require('../models/mongoModel');
+var Userdb = require('../models/mongoUserModel');
 
 // create and save new user
 exports.create = (req,res)=>{
@@ -21,7 +21,7 @@ exports.create = (req,res)=>{
         .save(user)
         .then(data => {
             //res.send(data)
-            res.redirect('/add-user');
+            res.redirect('/mongo/add-user');
         })
         .catch(err =>{
             res.status(500).send({

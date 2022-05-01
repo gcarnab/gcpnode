@@ -1,16 +1,24 @@
 const axios = require("axios")
-var path = require("path")
+
+var dbuseFlag = process.env.DB_USE
+var mysqlFlag = process.env.DB_USE_MYSQL
+var jsonFlag = process.env.DB_USE_JSON
+var mongoFlag = process.env.DB_USE_MONGO
 
 exports.homeRoutes = (req, res) => {
   // Make a get request to /api/users
-  var mongoUrl = "http://localhost:" + process.env.SERVERPORT + "/mongo/users"
-
   axios
-    .get("http://localhost:3000/users")
+    .get("http://localhost:8080/mongo/api/users")
     .then(function (response) {
-      //res.render("pages/mongo_index", { users: response.data })
-      var myPath = path.join(__dirname + "../views/pages/mongo_index.ejs")
-      res.render(myPath)
+      res.render("pages/mongo_index.ejs", {
+        users: response.data,
+        message: "UNDEFINED",
+        dbuseFlag: dbuseFlag,
+        mysqlFlag: mysqlFlag,
+        jsonFlag: jsonFlag,
+        mongoFlag: mongoFlag,
+        req,
+      })
     })
     .catch((err) => {
       res.send(err)
@@ -18,14 +26,31 @@ exports.homeRoutes = (req, res) => {
 }
 
 exports.add_user = (req, res) => {
-  res.render("../views/pages/mongo_add_user")
+  res.render("pages/mongo_add_user.ejs", {
+    message: "UNDEFINED",
+    dbuseFlag: dbuseFlag,
+    mysqlFlag: mysqlFlag,
+    jsonFlag: jsonFlag,
+    mongoFlag: mongoFlag,
+    req,
+  })
 }
 
 exports.update_user = (req, res) => {
   axios
-    .get("http://localhost:3000/mongo/users", { params: { id: req.query.id } })
+    .get("http://localhost:8080/mongo/api/users", {
+      params: { id: req.query.id },
+    })
     .then(function (userdata) {
-      res.render("../views/pages/mongo_update_user", { user: userdata.data })
+      res.render("pages/mongo_update_user.ejs", {
+        user: userdata.data,
+        message: "UNDEFINED",
+        dbuseFlag: dbuseFlag,
+        mysqlFlag: mysqlFlag,
+        jsonFlag: jsonFlag,
+        mongoFlag: mongoFlag,
+        req,
+      })
     })
     .catch((err) => {
       res.send(err)

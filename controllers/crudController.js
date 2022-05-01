@@ -1,10 +1,15 @@
 const User = require("../models/userModel")
 
+//READING CONFIGURATION VARIABLES
+var dbuseFlag = process.env.DB_USE
+var mysqlFlag = process.env.DB_USE_MYSQL
+var jsonFlag = process.env.DB_USE_JSON
+var mongoFlag = process.env.DB_USE_MONGO
+
 module.exports = {
   index: function (req, res) {
     User.get(req.conn, function (err, rows) {
-      //res.render("pages/index_crud.ejs", { data: rows, dbuse: dbuse, req })
-      res.render("pages/crudIndex.pug", { data: rows })
+      res.render("pages/crudIndex.pug", { data: rows, message : "", dbuseFlag : dbuseFlag , req })
     })
   },
   create: function (req, res) {
@@ -19,7 +24,7 @@ module.exports = {
 
   edit: function (req, res) {
     User.getById(req.conn, req.params.id, function (err, rows) {
-      res.render("pages/crudEdit.pug", { data: rows[0] })
+      res.render("pages/crudEdit.pug", { data: rows[0], req })
     })
   },
 

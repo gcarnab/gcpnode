@@ -10,12 +10,13 @@ var session = require("express-session")
 var { v4: uuidv4 } = require("uuid")
 var validator = require("express-validator")
 var methodOverride = require("method-override")
-var jsonServer = require("json-server")
 //var engines = require("consolidate")
 
 // DB
 //var myConnection = require("express-myconnection")
 var mysql = require("mysql")
+var mongoose = require("mongoose")
+var jsonServer = require("json-server")
 
 //LOGGING
 var morgan = require("morgan")
@@ -42,9 +43,21 @@ if (process.env.DB_USE_MYSQL == "true") {
   })
 }
 if (process.env.DB_USE_MONGO == "true") {
-  var mongoConnection = require("./database/db_mongo")
   // mongodb connection
-  //connectMongoDB()
+  const connectDB = require("./database/db_mongo")
+  //connectDB()
+
+  /*   mongoose.connect(
+    process.env.DB_MONGO_URI,
+    { useNewUrlParser: true },
+    (err) => {
+      if (!err) {
+        console.log("MongoDB Connection Succeeded.")
+      } else {
+        console.log("##### Error in MongoDB connection : " + err)
+      }
+    }
+  ) */
 }
 if (process.env.DB_USE_JSON == "true") {
   // JSON Server
@@ -127,13 +140,7 @@ app.use(
 
 // Using routes
 app.use("/", rootRouter)
-
-//app.use("/crud", crudRouter)
-
-/* mongoRouter.route("/mongo").get((req, res) => {
-  res.sendFile(path.join(__dirname + "pages/mongo_index.ejs"))
-}) */
-// app.use("/", mongoRouter)
+app.use("/mongo", require("./routes/mongoRouter"))
 
 // TEST ROUTE
 app.get("/test", (req, res) => {

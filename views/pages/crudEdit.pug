@@ -1,11 +1,6 @@
 doctype html
 html(lang="en")
-    head
-        meta(charset="UTF-8")
-        meta(http-equiv="X-UA-Compatible", content="IE=edge")
-        meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        title GC Web
-        link(rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css")
+    include ../partials/_head.pug
     body 
         h1(style="text-align:center;") REST MySQL CRUD with PUG
         p(style="text-align:center;")
@@ -14,7 +9,7 @@ html(lang="en")
         hr
         div(class="col-md-5")
             div(class="card-body")
-                form(action=`/crud/${data.userid}?_method=PUT` method="post")
+                form(action=`/crud/${data.id}?_method=PUT` method="post")
                     div(class="form-group")
                         input(type="text" value=data.username name="username" placeholder="Username" class="form-control" autofocus)
                     div(class="form-group")
@@ -22,6 +17,9 @@ html(lang="en")
                     div(class="form-group")
                         input(type="email" value=data.email name="email" placeholder="Email" class="form-control")
                     div(class="form-group")
-                        input(type="text" value=data.fullname name="fullname" placeholder="Fullname" class="form-control")                                                
+                        input(type="text" value=data.fullname name="fullname" placeholder="Fullname" class="form-control")   
+                    div(class="form-group")
+                        input(type="text" value=data.role name="role" placeholder="Role" class="form-control")                                                                      
                     button(type="submit" class="btn btn-primary") EDIT
+    include ../partials/_footer.pug
                         

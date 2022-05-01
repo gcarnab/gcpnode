@@ -38,16 +38,18 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">CRUD APIs:</h6>
 
-                <% if( message!="NO_USER" ){ %>
-                    <a class="collapse-item" href="/crud">REST MYSQL PUG</a>
-                    <a class="collapse-item" href="/tables">REST MYSQL EJS</a>
-                    <a class="collapse-item" href="#">JSON</a>
-                    <a class="collapse-item" href="/mongo">MONGO</a>
-                    <% } else { %>
-                        <a class="collapse-item" href="#">REST MYSQL PUG</a>
-                        <a class="collapse-item" href="#">REST MYSQL EJS</a>
-                        <a class="collapse-item" href="#">JSON</a>
-                        <a class="collapse-item" href="#">MONGO</a>
+                <% if( message!="UNDEFINED" ){ %>
+                    <% if( mysqlFlag=="true" ){ %>
+                        <a class="collapse-item" href="/crud">REST MYSQL PUG</a>
+                        <% } if( jsonFlag=="true" ){ %>
+                            <a class="collapse-item" href="#">JSON</a>
+                        <% } if( mongoFlag=="true" ){ %>
+                            <a class="collapse-item" href="/mongo">MONGO</a>
+                        <% } }else { %>
+                            <a class="collapse-item" href="#">REST MYSQL PUG</a>
+                            <a class="collapse-item" href="#">REST MYSQL EJS</a>
+                            <a class="collapse-item" href="#">JSON</a>
+                            <a class="collapse-item" href="#">MONGO</a>
                         <% } %>
             </div>
         </div>
@@ -112,7 +114,7 @@
             </li> -->
 
     <!-- Nav Item - Tables -->
-<!--     <li class="nav-item">
+    <!--     <li class="nav-item">
         <a class="nav-link" href="/tables">
             <i class="fas fa-fw fa-table"></i>
             <span>Tables</span></a>
@@ -128,9 +130,9 @@
 
     <!-- Sidebar Message -->
     <div class="sidebar-card d-none d-lg-flex">
-        <img class="sidebar-card-illustration mb-2" src="img/undraw_rocket.svg" alt="...">
-        <p class="text-center mb-2"><strong>GC Web</strong> is packed with premium features, components,
-            and more!</p>
+        <a href="/about">
+        <img class="sidebar-card-illustration mb-2" src="img/undraw_rocket.svg" alt="about" title="about">
+        </a>
     </div>
 
 </ul>

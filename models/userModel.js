@@ -4,7 +4,7 @@ module.exports = {
   },
 
   getById: function (conn, id, callback) {
-    conn.query(`SELECT * FROM users WHERE userid = ${id}`, callback)
+    conn.query(`SELECT * FROM users WHERE id = ${id}`, callback)
   },
 
   create: function (conn, data, callback) {
@@ -13,7 +13,8 @@ module.exports = {
       username = '${data.username}', 
       password = '${data.password}', 
       email = '${data.email}', 
-      fullname = '${data.fullname}'`,
+      fullname = '${data.fullname}', 
+      role = '${data.role}'`,
       callback
     )
   },
@@ -24,13 +25,14 @@ module.exports = {
       username = '${data.username}',
       password = '${data.password}',
       email = '${data.email}', 
-      fullname = '${data.fullname}' 
-      WHERE userid = ${id}`,
+      fullname = '${data.fullname}',
+      role = '${data.role}'
+      WHERE id = ${id}`,
       callback
     )
   },
 
   destroy: function (conn, id, callback) {
-    conn.query(`DELETE FROM users WHERE userid = ${id}`, callback)
+    conn.query(`DELETE FROM users WHERE id = ${id}`, callback)
   },
 }
