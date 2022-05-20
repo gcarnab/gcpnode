@@ -8,13 +8,11 @@ var mysql = require("mysql")
 var bcrypt = require("bcrypt")
 var connection = require("../database/db")
 var path = require("path")
-//const { validator } = require("../validator")
 
 //READING CONFIGURATION VARIABLES
 var dbuseFlag = process.env.DB_USE
 var mysqlFlag = process.env.DB_USE_MYSQL
 var jsonFlag = process.env.DB_USE_JSON
-var mongoFlag = process.env.DB_USE_MONGO
 
 // create application/json parser
 var jsonParser = bodyParser.json()
@@ -25,11 +23,9 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false })
 /* Defining multiple routers */
 var crudRouter = require("./crudRouter")
 var userRouter = require("./userRouter")
-var mongoRouter = require("./mongoRouter")
 
 rootRouter.use("/user", userRouter)
 rootRouter.use("/crud", crudRouter)
-rootRouter.use("/mongo", mongoRouter)
 
 //Home
 rootRouter.get("/", function (req, res) {
@@ -40,7 +36,6 @@ rootRouter.get("/", function (req, res) {
     dbuseFlag: dbuseFlag,
     mysqlFlag: mysqlFlag,
     jsonFlag: jsonFlag,
-    mongoFlag: mongoFlag,
     req,
   })
 })
@@ -52,7 +47,6 @@ rootRouter.get("/about", function (req, res) {
     dbuseFlag: dbuseFlag,
     mysqlFlag: mysqlFlag,
     jsonFlag: jsonFlag,
-    mongoFlag: mongoFlag,
     req,
   })
 })
@@ -65,7 +59,6 @@ rootRouter.get("/login", function (req, res) {
     dbuseFlag: dbuseFlag,
     mysqlFlag: mysqlFlag,
     jsonFlag: jsonFlag,
-    mongoFlag: mongoFlag,
   })
 })
 
@@ -79,7 +72,6 @@ rootRouter.get("/logout", function (req, res) {
     dbuseFlag: dbuseFlag,
     mysqlFlag: mysqlFlag,
     jsonFlag: jsonFlag,
-    mongoFlag: mongoFlag,
   })
 })
 
@@ -91,7 +83,6 @@ rootRouter.get("/tables", function (req, res) {
     dbuseFlag: dbuseFlag,
     mysqlFlag: mysqlFlag,
     jsonFlag: jsonFlag,
-    mongoFlag: mongoFlag,
   })
 })
 
@@ -114,7 +105,6 @@ rootRouter.post("/auth_login", urlencodedParser, (req, res, next) => {
         dbuseFlag: dbuseFlag,
         mysqlFlag: mysqlFlag,
         jsonFlag: jsonFlag,
-        mongoFlag: mongoFlag,
       })
     } else {
       var message = "Login failed! Please retry!"

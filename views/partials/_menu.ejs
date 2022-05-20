@@ -41,16 +41,17 @@
                 <% if( message!="UNDEFINED" ){ %>
                     <% if( mysqlFlag=="true" ){ %>
                         <a class="collapse-item" href="/crud">REST MYSQL PUG</a>
-                        <% } if( jsonFlag=="true" ){ %>
-                            <a class="collapse-item" href="#">JSON</a>
-                        <% } if( mongoFlag=="true" ){ %>
-                            <a class="collapse-item" href="/mongo">MONGO</a>
-                        <% } }else { %>
+                        <a class="collapse-item" href="http://localhost:3000">MONGO</a>
+                        <a class="collapse-item" href="#">JSON</a>
+
+                        <% } else { %>
                             <a class="collapse-item" href="#">REST MYSQL PUG</a>
                             <a class="collapse-item" href="#">REST MYSQL EJS</a>
                             <a class="collapse-item" href="#">JSON</a>
                             <a class="collapse-item" href="#">MONGO</a>
-                        <% } %>
+                            <% }}else{%>
+                                <a class="collapse-item" href="#">PLease Login!</a>
+                                <%} %>
             </div>
         </div>
     </li>
@@ -65,10 +66,10 @@
         <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Custom Utilities:</h6>
-                <% if( message!="NO_USER" ){ %>
+                <% if( message!="UNDEFINED" ){ %>
                     <a class="collapse-item" href="#">Blockchain</a>
                     <% } else { %>
-                        <a class="collapse-item" href="#">Blockchain</a>
+                        <a class="collapse-item" href="#">PLease Login!</a>
                         <% } %>
             </div>
         </div>
@@ -94,13 +95,13 @@
                 <h6 class="collapse-header">Social:</h6>
                 <a class="collapse-item" href="https://github.com/gcarnab/gcpnode/tree/branch-01" target="_blank"> <img
                         src="https://pngset.com/images/github-logo-label-text-symbol-transparent-png-2425199.png"
-                        height="30px" alt="Github" title="Github" /></a>
+                        height="30px" alt="Github" title="Github" /> Github</a>
                 <a class="collapse-item" href="https://it.linkedin.com/in/giuseppecarnabuci" target="_blank"><img
                         src="https://www.vva.it/wp-content/uploads/2018/10/linkedin-sociocon.png" height="30px"
-                        alt="Linkedin" title="Linkedin" /></a>
+                        alt="Linkedin" title="Linkedin" /> Linkedin</a>
                 <a class="collapse-item" href="https://twitter.com/gcarnab" target="_blank"> <img
                         src="https://cdn.jim-nielsen.com/macos/512/twitter-2015-12-30.png" height="30px" alt="Twitter"
-                        title="Twitter" /></a>
+                        title="Twitter" /> Twitter</a>
 
             </div>
         </div>
@@ -131,7 +132,7 @@
     <!-- Sidebar Message -->
     <div class="sidebar-card d-none d-lg-flex">
         <a href="/about">
-        <img class="sidebar-card-illustration mb-2" src="img/undraw_rocket.svg" alt="about" title="about">
+            <img class="sidebar-card-illustration mb-2" src="img/undraw_rocket.svg" alt="about" title="about">
         </a>
     </div>
 

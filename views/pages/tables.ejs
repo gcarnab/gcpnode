@@ -320,53 +320,50 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>Username</th>
-                                            <th>Password</th>
-                                            <th>Email</th>
-                                            <th>Fullname</th>
+                                            <th>Name</th>
+                                            <th>@Email</th>
+                                            <th>Gender</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         <tr>
                                             <th>ID</th>
-                                            <th>Username</th>
-                                            <th>Password</th>
-                                            <th>Email</th>
-                                            <th>Fullname</th>
+                                            <th>Name</th>
+                                            <th>@Email</th>
+                                            <th>Gender</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
-                                        <% for(var i=0; i < data.length; i++){%>
+                                        <% for(var i=0; i < users.length; i++){%>
                                             <tr>
                                                 <td>
-                                                    <%= data[i].userid %>
+                                                    <%= users[i]._id%>
                                                 </td>
                                                 <td>
-                                                    <%= data[i].username %>
+                                                    <%= users[i].name %>
                                                 </td>
                                                 <td>
-                                                    <%= data[i].password %>
+                                                    <%= users[i].email %>
                                                 </td>
                                                 <td>
-                                                    <%= data[i].email %>
+                                                    <%= users[i].gender %>
                                                 </td>
                                                 <td>
-                                                    <%= data[i].fullname %>
+                                                    <%= users[i].status %>
                                                 </td>
-
-                                                <!--                                               <td><input type="text" name="quantity""></td>
-                                              <td><input type="checkbox" name="productId" value="<%= itemList[i].productId %>"> | ADD </td> -->
+                                                <td>
+                                                    <a href="/mongo/update-user?id=<%= users[i]._id%>"
+                                                        class="btn border-shadow update">
+                                                        <span class="text-gradient"><i
+                                                                class="fas fa-pencil-alt"></i></span>
+                                                    </a>
+                                                </td>
                                             </tr>
-
                                             <% } %>
-                                                <tr>
-                                                    <td>Donna Snider</td>
-                                                    <td>Customer Support</td>
-                                                    <td>New York</td>
-                                                    <td>27</td>
-                                                    <td>2011/01/25</td>
-                                                    <td>$112,000</td>
-                                                </tr>
                                     </tbody>
                                 </table>
                             </div>
