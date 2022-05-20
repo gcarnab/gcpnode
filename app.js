@@ -10,28 +10,42 @@ var session = require("express-session")
 var { v4: uuidv4 } = require("uuid")
 var validator = require("express-validator")
 var methodOverride = require("method-override")
-//var engines = require("consolidate")
 
-// DB
-//var myConnection = require("express-myconnection")
+//OTHERS APP MODULES VARIABLES
+var appMongo
+
+//*******> DEFINING OTHER APPS (DEV ONLY)
+if (process.env.ENV_DEV == "true") {
+  appMongo = require("./apps/mongo/app.js")
+}
+
+//*******>  DB SETTINGS
+var cloudSqlConnection
+if (process.env.DB_USE_CLOUDSQL == "true") {
+  cloudSqlConnection = require("./database/db_cloud.js")
+}
 var mysql = require("mysql")
-var mongoose = require("mongoose")
-var jsonServer = require("json-server")
+//var jsonServer = require("json-server")
 
-//LOGGING
+//*******> LOGGING SETTINGS
 var morgan = require("morgan")
 var fs = require("fs")
 var rfs = require("rotating-file-stream")
 
 //ENVIRONMENT VARIABLES
 require("dotenv").config()
-console.log("######################################")
-console.log("process.env.NODE_ENV= " + process.env.NODE_ENV)
-console.log("process.env.DB_USE= " + process.env.DB_USE)
-console.log("process.env.DB_TYPE= " + process.env.DB_TYPE)
-console.log("######################################")
+if (process.env.DEBUG == "true") {
+  console.log("######################################")
+  console.log("process.env.MAIN_SERVER_PORT= " + process.env.MAIN_SERVER_PORT)
+  console.log("process.env.ENV_PROD= " + process.env.ENV_PROD)
+  console.log("process.env.ENV_DEV= " + process.env.ENV_DEV)
+  console.log("process.env.DB_USE= " + process.env.DB_USE)
+  console.log("DB_USE_MYSQL= " + process.env.DB_USE_MYSQL)
+  console.log("DB_USE_JSON= " + process.env.DB_USE_JSON)
+  console.log("######################################")
+}
 
-// Creating express server
+//*******> Creating express server <*******
 const app = express()
 
 if (process.env.DB_USE_MYSQL == "true") {
@@ -42,45 +56,21 @@ if (process.env.DB_USE_MYSQL == "true") {
     next()
   })
 }
-if (process.env.DB_USE_MONGO == "true") {
-  // mongodb connection
-  const connectDB = require("./database/db_mongo")
-  //connectDB()
 
-  /*   mongoose.connect(
-    process.env.DB_MONGO_URI,
-    { useNewUrlParser: true },
-    (err) => {
-      if (!err) {
-        console.log("MongoDB Connection Succeeded.")
-      } else {
-        console.log("##### Error in MongoDB connection : " + err)
-      }
-    }
-  ) */
-}
 if (process.env.DB_USE_JSON == "true") {
   // JSON Server
-  app.use("/json", jsonServer.router("./database/db.json"))
+  //app.use("/json", jsonServer.router("./database/db.json"))
 }
-// assign the engine to the file
-/* app.engine("ejs", engines.ejs)
-app.engine("pug", engines.pug) */
 
-// SETTING the default extension
-//app.set("view engine", "pug")
+//*******> TEMPLATE ENGINE SETTINGS
 app.set("view engine", "ejs")
 app.set("views", path.join(__dirname, "views"))
 
-// importing routes
-
+//*******> importing routes using one main router includin others
 var rootRouter = require("./routes/index")
 
-//var crudRouter = require("./routes/crudRouter")
-//var mongoRouter = require("./routes/mongoRouter")
-
-//ACTIONS FOR DEVELOPMENT MODE
-if (process.env.NODE_ENV == "development") {
+//*******> ACTIONS FOR DEVELOPMENT MODE
+if (process.env.ENV_DEV == "true") {
   // development error handler will print stacktrace
   app.use(function (err, req, res, next) {
     res.status(err.status || 500)
@@ -110,26 +100,22 @@ if (process.env.NODE_ENV == "development") {
   // setup the logger
   //app.use(morgan("combined", { stream: accessLogStream }))
   app.use(morgan("tiny"))
-} else if (process.env.NODE_ENV == "production") {
+} else if (process.env.ENV_PROD == "true") {
   //PRODUCTION SETTINGS
 }
 
-// static files
+//*******> static files
 app.use(express.static(__dirname + "/public"))
-
 // load assets
-app.use("/css", express.static(path.resolve(__dirname, "assets/css")))
-app.use("/img", express.static(path.resolve(__dirname, "assets/img")))
-app.use("/js", express.static(path.resolve(__dirname, "assets/js")))
-
-// parse requests of content-type - application/json
+//app.use("/css", express.static(path.resolve(__dirname, "assets/css")))
+//*******> parse requests of content-type - application/json
 app.use(express.json())
-// parse requests of content-type - application/x-www-form-urlencoded
+//*******> parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: false }))
 //app.use(bodyParser.urlencoded({ extended: true }))
 app.use(methodOverride("_method"))
 
-//Using session
+//*******> Using session
 app.use(
   session({
     secret: uuidv4(),
@@ -138,22 +124,28 @@ app.use(
   })
 )
 
-// Using routes
+//*******> Using routes
 app.use("/", rootRouter)
-app.use("/mongo", require("./routes/mongoRouter"))
 
-// TEST ROUTE
-app.get("/test", (req, res) => {
-  //res.json({ message: "Welcome to GC Web TEST API!" })
-  res.sendFile("test.html", { root: path.join(__dirname, "./views") })
-})
+//*******> ONLY DEV ENV
+if (process.env.ENV_DEV == "true") {
+  // USING OTHER APPS
+  app.use("/mongo", appMongo)
 
-// Start the server
-console.log(process.env.SERVERPORT)
-const PORT = parseInt(process.env.SERVERPORT) || 8080
+  // TEST ROUTE
+  app.get("/test", (req, res) => {
+    //res.json({ message: "Welcome to GC Web TEST API!" })
+    res.sendFile("test.html", { root: path.join(__dirname, "./views") })
+  })
+}
+
+//*******> Start the server
+const PORT = parseInt(process.env.MAIN_SERVER_PORT) || 8080
 app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`)
-  console.log("Press Ctrl+C to quit.")
+  if (process.env.DEBUG == "true" || false) {
+    console.log(`GC WEb Main App listening on port ${PORT}`)
+    console.log("Press Ctrl+C to quit.")
+  }
 })
 
 module.exports = app
